@@ -1,5 +1,6 @@
 package inconsistentResolver.reader.impl.cambridge;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import util.HttpHandlerUtil;
@@ -9,10 +10,6 @@ public class CambridgeApiHandler {
 
 	public static final String CAMBRIGE_DICT_URL = "http://dictionary.cambridge.org/dictionary/american-english/";
 	
-	private static String findEntryUrlForWord(String word){
-		String entryUrl = HttpHandlerUtil.getEntryUrlUsingApi(word);
-		return entryUrl;
-	}
 
 	private static String getHtmlPageForEntry(String entry){
 		String html = HttpHandlerUtil.getHTML(CAMBRIGE_DICT_URL+entry);
@@ -20,9 +17,12 @@ public class CambridgeApiHandler {
 	}
 	
 	public static List<String> getDefinitionsForWord(String word){
-		String entryUrl = findEntryUrlForWord(word);
+		List<String> definitions = new ArrayList<String>();
+		/*String entryUrl = findEntryUrlForWord(word);
 		String html = getHtmlPageForEntry(entryUrl);
-		List<String> definitions = StringHandlerUtil.getStringBetweenPattern(html,"<span class=\"def\">","<");
+		definitions = StringHandlerUtil.getStringBetweenPattern(html,"<span class=\"def\">","<");*/
+		String html = HttpHandlerUtil.getResponse(word);
+		definitions =  StringHandlerUtil.getStringBetweenPattern(html, "<def>", "<");
 		return definitions;
 	}
 	
