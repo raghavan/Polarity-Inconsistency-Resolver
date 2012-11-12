@@ -47,8 +47,9 @@ public class HttpHandlerUtil {
 		HttpClient client = new DefaultHttpClient();
 		HttpGet request = new HttpGet(URL_PRE_QUERY + word + URL_POST_QUERY);
 
+		//Its a key which we can get when registering with cambridge apis
 		request.setHeader("accessKey",
-				""); //Its a key, which we can get when registering with cambridge apis
+				""); 
 		request.setHeader("accept", "application/json");
 
 		HttpResponse response;
@@ -61,15 +62,13 @@ public class HttpHandlerUtil {
 			String line = new String();
 			StringBuffer responseStringBuf = new StringBuffer();
 			while ((line = rd.readLine()) != null) {
-				System.out.println(line);
+				//System.out.println(line);
 				responseStringBuf.append(line);
 			}
 			return responseStringBuf.toString();
 		} catch (ClientProtocolException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;

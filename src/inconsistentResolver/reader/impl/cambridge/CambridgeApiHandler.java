@@ -8,21 +8,24 @@ import util.StringHandlerUtil;
 
 public class CambridgeApiHandler {
 
-	public static final String CAMBRIGE_DICT_URL = "http://dictionary.cambridge.org/dictionary/american-english/";
-	
-
-	private static String getHtmlPageForEntry(String entry){
-		String html = HttpHandlerUtil.getHTML(CAMBRIGE_DICT_URL+entry);
+	private static String getHtmlPageForEntry(String entryUrl){
+		String html = HttpHandlerUtil.getHTML(entryUrl);
 		return html;
 	}
 	
-	public static List<String> getDefinitionsForWord(String word){
+	public static List<String> getDefinitionsByUrl(String word){
 		List<String> definitions = new ArrayList<String>();
-		/*String entryUrl = findEntryUrlForWord(word);
+		String jsonObject = HttpHandlerUtil.getResponse(word);
+		String entryUrl = StringHandlerUtil.getStringBetweenPattern(jsonObject, "<x href=", "\\").get(0);
 		String html = getHtmlPageForEntry(entryUrl);
-		definitions = StringHandlerUtil.getStringBetweenPattern(html,"<span class=\"def\">","<");*/
-		String html = HttpHandlerUtil.getResponse(word);
-		definitions =  StringHandlerUtil.getStringBetweenPattern(html, "<def>", "<");
+		definitions = StringHandlerUtil.getStringBetweenPattern(html,"<span class=\"def\">","<");
+		return definitions;
+	}
+	
+	public static List<String> getDefinitionsFromJson(String word){
+		List<String> definitions = new ArrayList<String>();
+		String jsonObject = HttpHandlerUtil.getResponse(word);
+		definitions =  StringHandlerUtil.getStringBetweenPattern(jsonObject, "<def>", "<");
 		return definitions;
 	}
 	

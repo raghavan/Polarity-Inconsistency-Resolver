@@ -1,9 +1,8 @@
 package inconsistentResolver.reader.impl.cambridge;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import inconsistentResolver.reader.IDictionaryReader;
+
+import java.util.List;
 
 public class CambridgeDictReader implements IDictionaryReader {
 	
@@ -13,10 +12,7 @@ public class CambridgeDictReader implements IDictionaryReader {
 
 	@Override
 	public List<String> getMeaning(String word) {
-		List<String> meanings = CambridgeApiHandler.getDefinitionsForWord(word);
-		
-		//find valid entry to search in api and get it
-		//get the html page and get definitions from it
+		List<String> meanings = CambridgeApiHandler.getDefinitionsFromJson(word);
 		return meanings;
 	}
 	
