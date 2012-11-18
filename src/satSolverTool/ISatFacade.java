@@ -1,5 +1,9 @@
 package satSolverTool;
 
-public interface ISatFacade {
+import java.util.List;
 
+public interface ISatFacade {
+ 
+	List<String> getInconsistentWords();
+	
 }
