@@ -15,6 +15,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 public class HttpHandlerUtil {
 	
 	public static String getHTML(String urlToRead) {
+		//System.out.println("Url to read ="+ urlToRead);
 	      URL url;
 	      HttpURLConnection conn;
 	      BufferedReader rd;
@@ -29,8 +30,7 @@ public class HttpHandlerUtil {
 	            result += line;
 	         }
 	         rd.close();
-	      } catch (Exception e) {
-	         e.printStackTrace();
+	      } catch (Exception e) {	         
 	      }
 	      return result;
 	   }
@@ -49,7 +49,7 @@ public class HttpHandlerUtil {
 
 		//Its a key which we can get when registering with cambridge apis
 		request.setHeader("accessKey",
-				""); 
+				"bwzcf97b1Zl3rRqygxjrQdnKXkccyrBp7qn7UvXxwB7HqwoABbnO2lhZ6kSCkMkP"); 
 		request.setHeader("accept", "application/json");
 
 		HttpResponse response;
