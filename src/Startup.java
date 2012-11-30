@@ -26,7 +26,7 @@ public class Startup {
 		for (String key : inconsistentWordPolarity.keySet()) {
 			boolean sensesObtained = useDictReaders(key);
 			if (sensesObtained) {
-				System.out.println("Inconsistent word /'" + key + "/' with polarity -> /'" + 
+				System.out.println("Inconsistent word \'" + key + "\' with polarity -> " + 
 								inconsistentWordPolarity.get(key));
 				System.out.println(" Update word polarity(Press 1-Positive/2-Negative/3-Neutral)");
 				int a = 0;
