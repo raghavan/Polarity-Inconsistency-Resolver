@@ -9,11 +9,9 @@ public class UserInteractImpl implements IUserInteract {
 
 	@Override
 	public void printMeanings(String word, DictionaryName name, List<String> meanings) {
-		System.out.println("Senses from the word "+word+ " from "+name.value);
-		int i =1;
+		System.out.println("Senses from the word '"+word+ "' from "+name.value + " \n");
 		for(String sense : meanings){
-			System.out.println(i + ")" + sense);
-			i++;
+			System.out.println("--->" + sense);
 		}
 		System.out.println(".......");
 	}

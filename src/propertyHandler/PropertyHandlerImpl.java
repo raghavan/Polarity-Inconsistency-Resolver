@@ -5,6 +5,7 @@ import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.ResourceBundle;
 
 import util.Constants;
@@ -38,21 +40,26 @@ public class PropertyHandlerImpl {
 		}
 	}
 
-	public static Map<String, String> readpropFile(String fileName) {
-		ResourceBundle bundle = ResourceBundle.getBundle(fileName);
-		Map<String, String> propContents = new LinkedHashMap<String, String>();
+	public static LinkedHashMap<String, String> readpropFile(String fileName) {
+		LinkedHashMap<String, String> propContents = new LinkedHashMap<String, String>();
 
-		Enumeration keys = bundle.getKeys();
-		while (keys.hasMoreElements()) {
-			String key = (String) keys.nextElement();
-			propContents.put(key, bundle.getString(key));
-			//System.out.println(key + "=" + bundle.getString(key));
+		Properties props = new OrderedProperties();
+		try {
+			props.load(new FileInputStream(fileName));
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		for (Enumeration e = props.propertyNames(); e.hasMoreElements();) {
+			String key = (String) e.nextElement();
+			propContents.put(key, props.getProperty(key));
 		}
 		return propContents;
 	}
 
 	public static Map<String, String> getInconsistentWords() {
-		Map<String,String> inconsistentWordPolarity = new HashMap<String, String>();
+		Map<String,String> inconsistentWordPolarity = new LinkedHashMap<String, String>();
 		try {
 			FileInputStream fstream = new FileInputStream(Constants.INCONSISTENT_POLAIRY_OUTPUT_FILE);
 			DataInputStream in = new DataInputStream(fstream);

@@ -3,7 +3,8 @@ package util;
 public enum DictionaryName {
 
 	CAMBRIDGE_DICTIONARY("Cambrige Dictionary"),
-	OXFORD_DICTIONARY("Oxford Dictionary");
+	OXFORD_DICTIONARY("Oxford Dictionary"),
+	WORDNET_DICTIONARY("WordNet");
 	
 	public String value;
 

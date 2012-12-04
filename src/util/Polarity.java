@@ -1,7 +1,7 @@
 package util;
 
 public enum Polarity {
-	Positive(1), Negative(2), Neutral(3);
+	Positive(1), Negative(2), Neutral(3), UnChanged(4);
 
 	int value;
 

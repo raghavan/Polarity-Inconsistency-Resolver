@@ -4,9 +4,12 @@ import inconsistentResolver.reader.impl.oxford.OxfordDictReader;
 import inconsistentResolver.userInteractor.IUserInteract;
 import inconsistentResolver.userInteractor.impl.UserInteractImpl;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,31 +23,58 @@ import util.Polarity;
 public class Startup {
 	public static void main(String args[]) {
 
-		Map<String, String> inconsistentWordPolarity = PropertyHandlerImpl
-				.getInconsistentWords();
+		/*Map of words obtained from existing sat solver results*/
+		LinkedHashMap<String, String> inconsistentWordPolarity = PropertyHandlerImpl.readpropFile(Constants.EXISTING_INCONST_PROP);
+		//PropertyHandlerImpl.getInconsistentWords(); -- to get the list of words from a given file
+		//PropertyHandlerImpl.writePropertyFile("InconsistentWordPolarity.properties",inconsistentWordPolarity);
+		
+		/*Word net frequencies obtained from wordnet library*/
+		Map<String,String> wordnetFreqSenses = PropertyHandlerImpl.readpropFile(Constants.WORDNET_SENSES_FREQ);
+		
+		/*Updated polarities which is the result of user interaction, 
+		 * this will be finally merged with the existing results to make the final collated result*/
 		Map<String, String> updatedWordPolarity = new HashMap<String, String>();
-		for (String key : inconsistentWordPolarity.keySet()) {
-			boolean sensesObtained = useDictReaders(key);
-			if (sensesObtained) {
-				System.out.println("Inconsistent word \'" + key + "\' with polarity -> " + 
-								inconsistentWordPolarity.get(key));
-				System.out.println(" Update word polarity(Press 1-Positive/2-Negative/3-Neutral)");
-				int a = 0;
-				while (a == 0) {
-					Scanner in = new Scanner(System.in);
-					try {
-						a = in.nextInt();
-					} catch (InputMismatchException e) {
-						System.out.println("Please enter values between 1 and 3");
-						a=0;
+		
+		String[] inconsistentWordPolarityKeyList = (String[]) inconsistentWordPolarity.keySet().toArray(new String[0]);
+		
+		int i = 0;
+		for (;i<inconsistentWordPolarityKeyList.length;) {
+			/*Since the word polarity obtained has word:polarity,count_of_polarity_conflicts*/
+			
+			System.out.println(inconsistentWordPolarityKeyList[i]);
+			System.out.println(inconsistentWordPolarity.get(inconsistentWordPolarityKeyList[i]));
+			Integer polarityConflictCount = Integer.parseInt(inconsistentWordPolarity.get(inconsistentWordPolarityKeyList[i]).split(",")[1]);
+
+			/*should iterate until the count_of_polarity_conflicts*/
+			List<String> innerList = new ArrayList<String>(); 
+			for(int j=0;j<polarityConflictCount;j++){
+				String key = inconsistentWordPolarityKeyList[i];
+				innerList.add(key);
+				boolean sensesObtained = useDictReaders(key);
+				showWordNetFreq(key,wordnetFreqSenses);
+				i++;
+			}
+			//i += polarityConflictCount;
+			for(String word : innerList){
+					System.out.println("Inconsistent word \'" + word + "\' with polarity -> " + 
+									inconsistentWordPolarity.get(word));
+					System.out.println(" Update word polarity(Press 1-Positive/2-Negative/3-Neutral)");
+					int a = 0;
+					while (a == 0) {
+						Scanner in = new Scanner(System.in);
+						try {
+							a = in.nextInt();
+						} catch (InputMismatchException e) {
+							System.out.println("Please enter values between 1 and 3");
+							a=0;
+						}
+						if(!(a>=1&&a<=3)){
+							System.out.println("Please enter values between 1 and 3");
+							a=0;
+						}
 					}
-					if(!(a>=1&&a<=3)){
-						System.out.println("Please enter values between 1 and 3");
-						a=0;
-					}
-				}
-				System.out.println("Word's polairty updated as = "+Polarity.fromValue(a)+"\n");
-				updatedWordPolarity.put(key, Polarity.fromValue(a));
+					System.out.println("Word's polairty updated as = "+Polarity.fromValue(a)+"\n");
+					updatedWordPolarity.put(word, Polarity.fromValue(a));
 			}
 		}
 
@@ -53,6 +83,12 @@ public class Startup {
 		existingWordPolarity.putAll(updatedWordPolarity);
 		PropertyHandlerImpl.writePropertyFile("UpdatedWordPolarity.properties",
 				existingWordPolarity);
+	}
+	
+	public static void showWordNetFreq(String word,Map<String,String> wordNetFreqSenses){
+		IUserInteract userinteractor = new UserInteractImpl();
+		List<String> meanings = Arrays.asList(wordNetFreqSenses.get(word).split(","));
+		userinteractor.printMeanings(word,DictionaryName.WORDNET_DICTIONARY,meanings);
 	}
 
 	public static boolean useDictReaders(String inconsistentWord) {
