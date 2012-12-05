@@ -4,6 +4,8 @@ import inconsistentResolver.reader.impl.oxford.OxfordDictReader;
 import inconsistentResolver.userInteractor.IUserInteract;
 import inconsistentResolver.userInteractor.impl.UserInteractImpl;
 
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,8 +22,66 @@ import util.Constants;
 import util.DictionaryName;
 import util.Polarity;
 
+import com.mxgraph.examples.swing.ClickHandler;
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+
 public class Startup {
 	public static void main(String args[]) {
+
+		ClickHandler frame = null;
+		try {
+			mxGraphComponent component = addModel(new GraphFeeder());
+			frame = new ClickHandler(component);
+			// frame.setDefaultCloseOperation(JFrame.ABORT);
+			frame.setSize(400, 320);
+			frame.setVisible(true);
+		} catch (Exception e) {
+			frame.setVisible(false);
+		}
+		
+		//doPolaritySupport();
+		
+	}
+	
+	public static mxGraphComponent addModel(GraphFeeder feeder){
+		final mxGraph graph = new mxGraph();
+		Object parent = graph.getDefaultParent();
+
+		graph.getModel().beginUpdate();
+		try {
+			Object next = graph.insertVertex(parent, null, "Next", 10, 200, 30,
+					20);
+			Object huge = graph.insertVertex(parent, null, "huge", 20, 20, 80,
+					30);
+			Object enormous = graph.insertVertex(parent, null, "enormous", 240,
+					150, 80, 30);
+			Object voluminous = graph.insertVertex(parent, null, "voluminous",
+					140, 150, 80, 30);
+			graph.insertEdge(parent, null, "", next, null);
+			graph.insertEdge(parent, null, "Oxford", huge, enormous);
+			graph.insertEdge(parent, null, "cambridge", huge, voluminous);
+		} finally {
+			graph.getModel().endUpdate();
+		}
+		final mxGraphComponent graphComponent = new mxGraphComponent(graph);
+		graphComponent.getGraphControl().addMouseListener(new MouseAdapter() {
+
+			public void mouseReleased(MouseEvent e) {
+				Object cell = graphComponent.getCellAt(e.getX(), e.getY());
+
+				if (cell != null) {
+					System.out.println("cell=" + graph.getLabel(cell));
+					if (graph.getLabel(cell).equalsIgnoreCase("next")) {
+						throw new NullPointerException();
+					}
+				}
+			}
+		});
+		return graphComponent;
+	}
+	
+	public static void doPolaritySupport(){
 
 		/*Map of words obtained from existing sat solver results*/
 		LinkedHashMap<String, String> inconsistentWordPolarity = PropertyHandlerImpl.readpropFile(Constants.EXISTING_INCONST_PROP);
@@ -41,8 +101,6 @@ public class Startup {
 		for (;i<inconsistentWordPolarityKeyList.length;) {
 			/*Since the word polarity obtained has word:polarity,count_of_polarity_conflicts*/
 			
-			System.out.println(inconsistentWordPolarityKeyList[i]);
-			System.out.println(inconsistentWordPolarity.get(inconsistentWordPolarityKeyList[i]));
 			Integer polarityConflictCount = Integer.parseInt(inconsistentWordPolarity.get(inconsistentWordPolarityKeyList[i]).split(",")[1]);
 
 			/*should iterate until the count_of_polarity_conflicts*/
@@ -57,7 +115,7 @@ public class Startup {
 			//i += polarityConflictCount;
 			for(String word : innerList){
 					System.out.println("Inconsistent word \'" + word + "\' with polarity -> " + 
-									inconsistentWordPolarity.get(word));
+									inconsistentWordPolarity.get(word).split(",")[0]);
 					System.out.println(" Update word polarity(Press 1-Positive/2-Negative/3-Neutral)");
 					int a = 0;
 					while (a == 0) {
