@@ -3,6 +3,7 @@ package inconsistentResolver.userInteractor.impl;
 import java.util.List;
 
 import util.DictionaryName;
+import inconsistentResolver.graphfeed.GraphFeeder;
 import inconsistentResolver.userInteractor.IUserInteract;
 
 public class UserInteractImpl implements IUserInteract {
@@ -14,6 +15,14 @@ public class UserInteractImpl implements IUserInteract {
 			System.out.println("--->" + sense);
 		}
 		System.out.println(".......");
+	}
+	
+	@Override
+	public GraphFeeder getMeaningsToGraph(String word, DictionaryName name, List<String> meanings) {
+		GraphFeeder graphFeeder = new GraphFeeder();
+		graphFeeder.setWord(word);
+		graphFeeder.addDictSensee(name, meanings);
+		return graphFeeder;
 	}
 
 }

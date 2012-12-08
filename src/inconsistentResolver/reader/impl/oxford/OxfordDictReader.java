@@ -24,7 +24,6 @@ public class OxfordDictReader implements IDictionaryReader {
 			if(!str.contains("<a"))
 				sensesToReturn.add(str);
 		}
-		System.out.println("......");
 		return sensesToReturn;
 	}
 }
