@@ -1,3 +1,11 @@
+To start the application use the Class named Checker.java. This can run on any platform which has JRE5 and above. (javac Checker.java) --> java Checker would start the app.
+
+1.Click Start to enter the application.
+2.Clicking Next/Back to move through the set of conflicting words.
+3.Senses/Words can be moved along the screen for ease of visualization.
+4.If Word is clicked the Polarity keeps on Changing.(For Ex.1st Click changes to Positive next click to Negative and keep on rotating)
+5.Save button helps to save the changes intermittently to avoid data loss.
+
 
 An existing SAT solver is applied over the words obtained from applexicon/OpinonFinder/General Inquirer and a set of inconsistent word polarity 
 is detected based on the word frequency obtained from the wordnet library.
@@ -14,3 +22,4 @@ V= {huge, immense, vast, usually great in size, extremely large, enormous, very 
 5.	Again recalculate the polarity of the inconsistent words based on the newer values derived using the technique explained in the introduction.
 
 6.	Update the inconsistent words in the existing input set with the new polarities and run the SAT solver once again.
+

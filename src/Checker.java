@@ -94,7 +94,9 @@ public class Checker {
 					.insertVertex(
 							defaultParent,
 							null,
-							Constants.WELCOME_NOTE + StringHandlerUtil.makeLeftAlign(Constants.WELCOME_INSTRUCTIONS),
+							Constants.WELCOME_NOTE
+									+ StringHandlerUtil
+											.makeLeftAlign(Constants.WELCOME_INSTRUCTIONS),
 							10, 100, 700, 400, "");
 
 			Object start = graph.insertVertex(defaultParent, null, "Start",
@@ -111,11 +113,12 @@ public class Checker {
 			graph.getModel().beginUpdate();
 			for (GraphFeeder graphFeeder : graphFeeders) {
 
-				Object vword = graph
-						.insertVertex(defaultParent, null, graphFeeder
-								.getWord()
-								+ ":Polarity=" + graphFeeder.getPolarity(), x1, pos_y,
-								200, 100, "");
+				Object vword = graph.insertVertex(
+						defaultParent,
+						null,
+						graphFeeder.getWord().toUpperCase() + "  :Polarity="
+								+ graphFeeder.getPolarity(), x1, pos_y, 200,
+						100, "");
 				x1 = x1 + 300;
 				Map<DictionaryName, List<String>> dictSenses = graphFeeder
 						.getDictSenses();
@@ -134,31 +137,37 @@ public class Checker {
 					}
 					String sense = dictSenses.get(dict).toString();
 					if (temp == 0) {
-						vsense = graph.insertVertex(defaultParent, null,
-								sense, a, b, 100, sense.length()+100,
+						vsense = graph.insertVertex(defaultParent, null, sense,
+								a, b, 100, sense.length() + 100,
 								"whiteSpace=wrap");
 						graph.insertEdge(defaultParent, null, dict.value,
 								vword, vsense);
-						a = a + sense.length()+sense.length()+100;
+						a = a + sense.length() + 100;
 						b = b + 20;
 					} else {
-						graph.insertEdge(defaultParent, null, dict.value, vword,
-								repeatingCell);
-						a = a + sense.length()+100;
+						graph.insertEdge(defaultParent, null, dict.value,
+								vword, repeatingCell);
+						a = a + sense.length() + 100;
 						b = b + 20;
 					}
 				}
 			}
 			b += 50;
-			a += 100;
-			x1 += 100;
+			a += 50;
+			x1 += 50;
 			if (count != globalcount) {
 				Object next = graph.insertVertex(defaultParent, null, "Next",
-						750, 600, 80, 80);
+						750, 600, 70, 70);
 				graph.insertEdge(defaultParent, null, "", next, null);
 			}
+
+			if (count >= 1) {
+				Object back = graph.insertVertex(defaultParent, null, "Back",
+					600, 600, 70, 70);
+				graph.insertEdge(defaultParent, null, "", back, null);
+			}
 			Object saveFile = graph.insertVertex(defaultParent, null,
-					"Save to File", 600, 600, 80, 80);
+					"Save", 450, 600, 70, 70);
 			graph.insertEdge(defaultParent, null, "", saveFile, null);
 		}
 		final mxGraphComponent drawGraph = new mxGraphComponent(graph);
@@ -168,7 +177,7 @@ public class Checker {
 				System.out.println("Mouse click in graph component");
 				if (cell != null
 						&& graph.getLabel(cell)
-								.equalsIgnoreCase("Save to File")) {
+								.equalsIgnoreCase("Save")) {
 					writeUpdatedPolarity(updatedWordPolarity);
 				}
 				if (cell != null
@@ -181,15 +190,16 @@ public class Checker {
 				if (cell != null
 						&& graph.getLabel(cell) != "Next"
 						&& !graph.getLabel(cell).equalsIgnoreCase(
-								"Save to File")) {
+								"Save")) {
 					mxCellState cellState;
 					String newLabelPolarity = null;
 					System.out.println("cell=" + graph.getLabel(cell));
 					if (graph.getLabel(cell).contains("=")) {
-						String labelPolarity = graph.getLabel(cell)
-								.split(":Polarity\\=")[1];
-						String labelWord = graph.getLabel(cell).split(":Polarity\\=")[0];
-						
+						String labelPolarity = graph.getLabel(cell).split(
+								"  :Polarity\\=")[1];
+						String labelWord = graph.getLabel(cell).split(
+								"  :Polarity\\=")[0];
+
 						for (Map.Entry<String, String> eachUpdatedWordPolarity : updatedWordPolarity
 								.entrySet()) {
 							String updatedWord = eachUpdatedWordPolarity
@@ -202,21 +212,22 @@ public class Checker {
 						if (labelPolarity.equalsIgnoreCase("positive")) {
 							newLabelPolarity = "Negative";
 							updatedWordPolarity
-									.put(labelWord, newLabelPolarity);
+									.put(labelWord.toLowerCase(), newLabelPolarity.toLowerCase());
 							System.out.println(updatedWordPolarity);
 						} else if (labelPolarity.equalsIgnoreCase("negative")) {
 							newLabelPolarity = "Neutral";
 							updatedWordPolarity
-									.put(labelWord, newLabelPolarity);
+									.put(labelWord.toLowerCase(), newLabelPolarity.toLowerCase());
 							System.out.println(updatedWordPolarity);
 						} else {
 							newLabelPolarity = "Positive";
 							updatedWordPolarity
-									.put(labelWord, newLabelPolarity);
+									.put(labelWord.toLowerCase(), newLabelPolarity.toLowerCase());
 							System.out.println(updatedWordPolarity);
 						}
 						cellState = graph.getView().getState(cell);
-						cellState.setLabel(labelWord + ":Polarity=" + newLabelPolarity);
+						cellState.setLabel(labelWord + "  :Polarity="
+								+ newLabelPolarity);
 					}
 				}
 				if (cell != null
@@ -228,12 +239,21 @@ public class Checker {
 							globalGraphFeeders.get(count++),
 							updatedWordPolarity);
 				}
+				if (cell != null
+						&& graph.getLabel(cell).equalsIgnoreCase("Back")) {
+					graph.removeCells(graph.getChildVertices(graph
+							.getDefaultParent()));
+					drawGraph(graph, defaultParent, globalGraphFeeders,
+							globalGraphFeeders.get(--count),
+							updatedWordPolarity);
+				}
 			}
 		});
 		graph.setAutoSizeCells(true);
-		graph.setEdgeLabelsMovable(false);
+		graph.setEdgeLabelsMovable(true);
 		graph.setAllowDanglingEdges(false);
 		graph.setCellsEditable(false);
+		graph.setConnectableEdges(false);
 		// graph.setCellsMovable(false);
 		// graph.setCellsResizable(false);
 		graph.setSplitEnabled(false);
@@ -299,7 +319,7 @@ public class Checker {
 		Map<String, String> existingWordPolarity = PropertyHandlerImpl
 				.readpropFile(Constants.WORD_POLARITY_SRC_FILENAME);
 		existingWordPolarity.putAll(updatedWordPolarity);
-		PropertyHandlerImpl.writePropertyFile(Constants.OUTPUT_PROP_FILE     ,
+		PropertyHandlerImpl.writePropertyFile(Constants.OUTPUT_PROP_FILE,
 				existingWordPolarity);
 	}
 
