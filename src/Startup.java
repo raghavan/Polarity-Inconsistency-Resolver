@@ -2,30 +2,20 @@ import inconsistentResolver.graphfeed.GraphFeeder;
 import inconsistentResolver.reader.IDictionaryReader;
 import inconsistentResolver.reader.impl.cambridge.CambridgeDictReader;
 import inconsistentResolver.reader.impl.oxford.OxfordDictReader;
-import inconsistentResolver.userInteractor.IUserInteract;
-import inconsistentResolver.userInteractor.impl.UserInteractImpl;
 
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner;
-
-import javax.swing.JFrame;
 
 import propertyHandler.PropertyHandlerImpl;
 import util.Constants;
 import util.DictionaryName;
-import util.Polarity;
 
-import com.mxgraph.examples.swing.ClickHandler;
 import com.mxgraph.swing.mxGraphComponent;
 import com.mxgraph.view.mxGraph;
 
@@ -42,9 +32,11 @@ public class Startup {
 		/* Map of words obtained from existing sat solver results */
 		LinkedHashMap<String, String> inconsistentWordPolarity = PropertyHandlerImpl
 				.readpropFile(Constants.EXISTING_INCONST_PROP);
-		// PropertyHandlerImpl.getInconsistentWords(); -- to get the list of
-		// words from a given file
-		// PropertyHandlerImpl.writePropertyFile("InconsistentWordPolarity.properties",inconsistentWordPolarity);
+		
+		/*
+		 PropertyHandlerImpl.getInconsistentWords(); -- to get the list of words from a given file
+		 PropertyHandlerImpl.writePropertyFile("InconsistentWordPolarity.properties",inconsistentWordPolarity);
+		 */
 
 		/* Word net frequencies obtained from wordnet library */
 		Map<String, String> wordnetFreqSenses = PropertyHandlerImpl

@@ -12,12 +12,13 @@ public class CambridgeApiHandler {
 		String html = HttpHandlerUtil.getHTML(entryUrl);
 		return html;
 	}
+	public static final String URL = "http://dictionary.cambridge.org/dictionary/american-english/";
 	
 	public static List<String> getDefinitionsByUrl(String word){
 		List<String> definitions = new ArrayList<String>();
-		String jsonObject = HttpHandlerUtil.getResponse(word);
-		String entryUrl = StringHandlerUtil.getStringBetweenPattern(jsonObject, "<x href=", "\\").get(0);
-		String html = getHtmlPageForEntry(entryUrl);
+		//String jsonObject = HttpHandlerUtil.getResponse(word);
+		//String entryUrl = StringHandlerUtil.getStringBetweenPattern(jsonObject, "<x href=", "\\").get(0);
+		String html = getHtmlPageForEntry(URL+word);
 		definitions = StringHandlerUtil.getStringBetweenPattern(html,"<span class=\"def\">","<");
 		return definitions;
 	}

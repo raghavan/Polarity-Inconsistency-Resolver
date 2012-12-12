@@ -28,4 +28,23 @@ public class StringHandlerUtil {
 
 	}
 	
+	public static String makeLeftAlign(String input) {
+		int width = 200;
+		int pos = 0;
+		StringBuilder sb = new StringBuilder();
+		
+		String[] words = input.split(" ");
+		for (String w : words) {
+			if (pos + w.length() > width) {
+				sb.append('\n');
+				pos = 0;
+			}
+			sb.append(w);
+			sb.append(' ');
+			pos += w.length() + 1;
+			
+		}
+		return sb.toString();
+	}
+	
 }

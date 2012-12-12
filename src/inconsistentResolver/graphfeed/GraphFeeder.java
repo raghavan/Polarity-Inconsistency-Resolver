@@ -46,7 +46,8 @@ public class GraphFeeder {
 	}
 
 	public String getPolarity() {
-		return polarity;
+		String polarityWithCaps = polarity.substring(0, 1).toUpperCase() + polarity.substring(1);
+		return polarityWithCaps;
 	}
 
 	public void setPolarity(String polarity) {

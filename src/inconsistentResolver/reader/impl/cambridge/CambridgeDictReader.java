@@ -12,7 +12,8 @@ public class CambridgeDictReader implements IDictionaryReader {
 
 	@Override
 	public List<String> getMeaning(String word) {
-		List<String> meanings = CambridgeApiHandler.getDefinitionsFromJson(word);
+		List<String> meanings = CambridgeApiHandler.getDefinitionsByUrl(word); 
+				//CambridgeApiHandler.getDefinitionsFromJson(word);
 		return meanings;
 	}
 	
